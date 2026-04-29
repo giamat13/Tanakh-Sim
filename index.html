@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סימולציות תנ"ך דיגיטליות</title>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E61425RLBV"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-E61425RLBV');
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #8B4513;
+            --secondary: #D4AF37;
+            --accent: #F5DEB3;
+            --dark: #2C1810;
+            --light: #FFF8DC;
+            --text: #1a1a1a;
+            --border: #DAA520;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FFF8DC 0%, #FFE4B5 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(139, 69, 19, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #A0522D 100%);
+            color: var(--accent);
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(139, 69, 19, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .simulations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .simulation-card {
+            background: linear-gradient(135deg, #FFF8DC 0%, #FFFACD 100%);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .simulation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            transition: left 0.5s ease;
+            z-index: 0;
+        }
+
+        .simulation-card:hover {
+            transform: translateY(-8px) rotateX(2deg);
+            box-shadow: 0 16px 40px rgba(139, 69, 19, 0.25);
+            border-color: var(--secondary);
+        }
+
+        .simulation-card:hover::before {
+            left: 100%;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-number {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--accent);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .card-description {
+            color: #555;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .card-reference {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-visit {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, #A0522D 100%);
+            color: var(--accent);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
+        }
+
+        .btn-visit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 18px rgba(139, 69, 19, 0.3);
+            background: linear-gradient(135deg, #A0522D 0%, #8B4513 100%);
+        }
+
+        .btn-visit:active {
+            transform: scale(0.98);
+        }
+
+        .stats-section {
+            text-align: center;
+            margin: 3rem 0;
+            padding: 2rem;
+            background: rgba(255, 248, 220, 0.7);
+            border-radius: 12px;
+            border-top: 3px solid var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .stats-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-item {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            color: var(--primary);
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        footer {
+            background: var(--dark);
+            color: var(--accent);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            border-top: 3px solid var(--secondary);
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        footer a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            .simulations-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .container {
+                margin: 1.5rem auto;
+            }
+
+            .stats-grid {
+                gap: 1rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+
+        /* Loading state */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .error {
+            background: #FFE4E1;
+            border: 2px solid #CD5C5C;
+            color: #8B0000;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📖 סימולציות תנ"ך דיגיטליות</h1>
+        <p>חוויות אינטראקטיביות של סיפורים מתוך ספר הספרים</p>
+    </header>
+
+    <div class="container">
+        <div class="stats-section">
+            <div class="stats-title">על הפרוייקט</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-sims">1</div>
+                    <div class="stat-label">סימולציות</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">📚</div>
+                    <div class="stat-label">בעברית</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="simulations-grid" id="simulations-container">
+            <div class="loading">טוען סימולציות...</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 סימולציות תנ"ך דיגיטליות</p>
+        <p><a href="https://github.com/giamat13/Tanakh-Sim" target="_blank">צפה בפרוייקט ב-GitHub</a></p>
+    </footer>
+
+    <script>
+        // JSON של הסימולציות
+        const simulationsData = {
+            simulations: [
+                {
+                    id: 1,
+                    title: "ביקור אצל העוברת בעין דור",
+                    reference: "שמואל א׳, פרק 28",
+                    description: "סימולציה של הלילה המטלטל שבו שאול המלך בא לעוברת בעין דור לקדוח את העתיד. חווה את המתח, הפחד והמסתוריות של המפגש הזה.",
+                    url: "1-Samuel-28",
+                    chapter: "שמואל א׳ 28",
+                    themes: ["מלכות", "גורל", "רוחות"]
+                }
+            ]
+        };
+
+        // טוען את הסימולציות מה-JSON
+        function loadSimulations() {
+            const container = document.getElementById('simulations-container');
+            
+            if (!simulationsData.simulations || simulationsData.simulations.length === 0) {
+                container.innerHTML = '<div class="error">לא נמצאו סימולציות כרגע</div>';
+                return;
+            }
+
+            // עדכן את מספר הסימולציות
+            document.getElementById('total-sims').textContent = simulationsData.simulations.length;
+
+            // יצור קארטים לכל סימולציה
+            container.innerHTML = simulationsData.simulations.map((sim, index) => `
+                <div class="simulation-card" style="animation-delay: ${index * 0.1}s;">
+                    <div class="card-content">
+                        <div class="card-number">${index + 1}</div>
+                        <h2 class="card-title">${sim.title}</h2>
+                        <p class="card-reference">📖 ${sim.reference}</p>
+                        <p class="card-description">${sim.description}</p>
+                        <div style="margin-bottom: 1rem; font-size: 0.85rem;">
+                            <span style="display: inline-block; background: var(--primary); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 20px; margin-left: 0.5rem;">
+                                ${sim.themes.join(', ')}
+                            </span>
+                        </div>
+                        <a href="${sim.url}" target="_blank" class="btn-visit">🔗 כנס לסימולציה</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // טוען את הסימולציות כשהעמוד נטען
+        document.addEventListener('DOMContentLoaded', loadSimulations);
+
+        // Google Analytics - track page views
+        gtag('event', 'page_view', {
+            page_title: 'סימולציות תנ״ך דיגיטליות',
+            page_location: window.location.href
+        });
+
+        // Track button clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-visit')) {
+                gtag('event', 'simulation_visit', {
+                    simulation_title: e.target.closest('.simulation-card').querySelector('.card-title').textContent,
+                    button_text: e.target.textContent
+                });
+            }
+        });
+    </script>
+</body>
+</html>

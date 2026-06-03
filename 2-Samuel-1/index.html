@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E61425RLBV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E61425RLBV');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>קינת דוד – שמואל ב׳ פרק א׳</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #1a0f08;
+    --parchment: #f5e6c8;
+    --parchment-dark: #e8d5a8;
+    --gold: #b8860b;
+    --gold-light: #d4a017;
+    --crimson: #7a1520;
+    --ash: #4a3a2a;
+    --sky: #3a5a7a;
+    --border: #6b4c1e;
+  }
+
+  body {
+    background: #1a0f08;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(180deg, #0d0805 0%, #1a0f08 60%, transparent 100%);
+    text-align: center;
+    padding: 3rem 1rem 2rem;
+    position: relative;
+  }
+  .header-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--gold-light);
+    letter-spacing: 0.12em;
+    text-shadow: 0 0 30px rgba(212,160,23,0.4), 2px 2px 6px rgba(0,0,0,0.9);
+    line-height: 1.2;
+  }
+  .header-subtitle {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    color: #c8a46e;
+    margin-top: 0.6rem;
+    letter-spacing: 0.06em;
+    opacity: 0.85;
+  }
+  .header-verse {
+    margin: 1.2rem auto 0;
+    max-width: 520px;
+    font-size: clamp(1rem, 2.2vw, 1.3rem);
+    color: var(--parchment);
+    font-style: italic;
+    line-height: 1.7;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+    border-top: 1px solid rgba(184,134,11,0.3);
+    padding-top: 1rem;
+  }
+
+  /* ── COMIC CONTAINER ── */
+  .comic-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1rem 0.75rem 4rem;
+  }
+
+  /* ── PANEL STYLES ── */
+  .panel-row {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .panel-row.one   { grid-template-columns: 1fr; }
+  .panel-row.two   { grid-template-columns: 1fr 1fr; }
+  .panel-row.three { grid-template-columns: 1fr 1.4fr 1fr; }
+  .panel-row.two-wide { grid-template-columns: 1.6fr 1fr; }
+
+  .panel {
+    position: relative;
+    background: var(--parchment);
+    border: 3px solid var(--ink);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .panel:hover {
+    transform: scale(1.012);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.7);
+    z-index: 5;
+  }
+  .panel svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Caption boxes */
+  .caption {
+    position: absolute;
+    background: var(--ink);
+    color: var(--gold-light);
+    font-size: clamp(9px, 1.6vw, 13px);
+    padding: 4px 8px;
+    line-height: 1.4;
+    letter-spacing: 0.03em;
+    max-width: 55%;
+    z-index: 10;
+  }
+  .caption.top-right  { top: 6px; right: 6px; text-align: right; }
+  .caption.top-left   { top: 6px; left: 6px; text-align: left; }
+  .caption.bot-right  { bottom: 6px; right: 6px; text-align: right; }
+  .caption.bot-left   { bottom: 6px; left: 6px; text-align: left; }
+
+  /* Speech & thought bubbles */
+  .speech {
+    position: absolute;
+    background: white;
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    font-size: clamp(8px, 1.4vw, 12px);
+    padding: 5px 8px;
+    line-height: 1.45;
+    text-align: right;
+    max-width: 48%;
+    z-index: 10;
+    direction: rtl;
+  }
+  .speech::after {
+    content: '';
+    position: absolute;
+    width: 0; height: 0;
+    border-style: solid;
+  }
+  .speech.bottom-left::after {
+    bottom: -10px; right: 16px;
+    border-width: 10px 8px 0 8px;
+    border-color: var(--ink) transparent transparent transparent;
+  }
+  .speech.bottom-right::after {
+    bottom: -10px; left: 16px;
+    border-width: 10px 8px 0 8px;
+    border-color: var(--ink) transparent transparent transparent;
+  }
+  .speech.top-left::after {
+    top: -10px; right: 16px;
+    border-width: 0 8px 10px 8px;
+    border-color: transparent transparent var(--ink) transparent;
+  }
+
+  /* Lament text (stylized poem lines) */
+  .lament-box {
+    position: absolute;
+    background: rgba(26,15,8,0.88);
+    color: var(--gold-light);
+    font-size: clamp(9px, 1.7vw, 13px);
+    padding: 6px 10px;
+    line-height: 1.7;
+    text-align: center;
+    letter-spacing: 0.06em;
+    border: 1px solid var(--gold);
+    z-index: 10;
+  }
+
+  /* Panel number badge */
+  .panel-num {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    width: 20px; height: 20px;
+    background: var(--ink);
+    color: var(--parchment);
+    font-size: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  /* ── TITLE PANEL ── */
+  .title-panel {
+    background: var(--ink);
+    border: 4px solid var(--gold);
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-bottom: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .title-panel::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(184,134,11,0.3);
+    pointer-events: none;
+  }
+  .title-panel h1 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    color: var(--gold-light);
+    letter-spacing: 0.15em;
+    text-shadow: 0 0 20px rgba(212,160,23,0.5);
+  }
+  .title-panel p {
+    color: #c8a46e;
+    margin-top: 0.4rem;
+    font-size: clamp(0.8rem, 1.8vw, 1rem);
+    letter-spacing: 0.08em;
+  }
+
+  /* ── FOOTER ── */
+  .comic-footer {
+    text-align: center;
+    padding: 2rem 1rem 3rem;
+    border-top: 1px solid rgba(184,134,11,0.25);
+  }
+  .comic-footer p {
+    color: #7a6050;
+    font-size: 0.85rem;
+    margin: 0.3rem 0;
+  }
+  .back-btn {
+    display: inline-block;
+    margin-top: 1.2rem;
+    background: rgba(184,134,11,0.15);
+    color: var(--gold-light);
+    border: 1px solid rgba(184,134,11,0.4);
+    padding: 0.6rem 1.6rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.2s ease;
+  }
+  .back-btn:hover { background: rgba(184,134,11,0.3); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .panel-row.three { grid-template-columns: 1fr; }
+    .panel-row.two-wide { grid-template-columns: 1fr; }
+    .panel-row.two { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 900px) and (min-width: 601px) {
+    .panel-row.three { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">קִינַת דָּוִד</div>
+  <div class="header-subtitle">שמואל ב׳ פרק א׳ | קומיקס מקראי</div>
+  <div class="header-verse">
+    אֵיךְ נָפְלוּ גִבּוֹרִים<br>
+    <span style="font-size:0.85em;opacity:0.7;">שמואל ב׳ א׳:י״ט</span>
+  </div>
+</div>
+
+<div class="comic-wrap">
+
+  <!-- TITLE PANEL -->
+  <div class="title-panel">
+    <h1>קִינַת דָּוִד</h1>
+    <p>שמואל ב׳ פרק א׳ • פסוקים י״ז–כ״ז</p>
+  </div>
+
+  <!-- ROW 1: Messenger arrives -->
+  <div class="panel-row one">
+    <div class="panel" style="height:280px;">
+      <svg viewBox="0 0 960 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+        <!-- Sky – dusk after battle -->
+        <defs>
+          <linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1a0a05"/>
+            <stop offset="50%" stop-color="#3d1a0a"/>
+            <stop offset="100%" stop-color="#5a2010"/>
+          </linearGradient>
+          <linearGradient id="ground1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#6b4c1e"/>
+            <stop offset="100%" stop-color="#3a2a10"/>
+          </linearGradient>
+        </defs>
+        <!-- Background -->
+        <rect width="960" height="280" fill="url(#sky1)"/>
+        <!-- Rolling hills -->
+        <ellipse cx="200" cy="290" rx="350" ry="90" fill="#2a1a0a"/>
+        <ellipse cx="700" cy="295" rx="400" ry="85" fill="#241508"/>
+        <!-- Ground -->
+        <rect x="0" y="230" width="960" height="50" fill="url(#ground1)"/>
+        <!-- Distant mountains -->
+        <polygon points="0,200 80,120 160,195" fill="#1a0d05"/>
+        <polygon points="100,210 200,100 310,205" fill="#150b03"/>
+        <polygon points="700,205 820,115 920,200" fill="#1a0d05"/>
+        <!-- Blood-red sun setting -->
+        <circle cx="480" cy="185" r="45" fill="#8b1a00" opacity="0.6"/>
+        <circle cx="480" cy="185" r="30" fill="#c03010" opacity="0.5"/>
+        <!-- Smoke plumes from battle -->
+        <ellipse cx="300" cy="130" rx="25" ry="40" fill="#2a2020" opacity="0.6"/>
+        <ellipse cx="310" cy="100" rx="18" ry="30" fill="#3a2a2a" opacity="0.5"/>
+        <ellipse cx="650" cy="120" rx="20" ry="35" fill="#2a2020" opacity="0.5"/>
+        <!-- Messenger running – figure left side -->
+        <!-- Body -->
+        <ellipse cx="120" cy="195" rx="14" ry="22" fill="#8b6030" opacity="0.95"/>
+        <!-- Head -->
+        <circle cx="120" cy="166" r="14" fill="#c09060"/>
+        <!-- Running legs -->
+        <line x1="115" y1="217" x2="100" y2="248" stroke="#7a5020" stroke-width="7" stroke-linecap="round"/>
+        <line x1="125" y1="217" x2="140" y2="242" stroke="#7a5020" stroke-width="7" stroke-linecap="round"/>
+        <!-- Arms outstretched – running -->
+        <line x1="110" y1="185" x2="80" y2="200" stroke="#8b6030" stroke-width="6" stroke-linecap="round"/>
+        <line x1="130" y1="185" x2="155" y2="175" stroke="#8b6030" stroke-width="6" stroke-linecap="round"/>
+        <!-- Torn clothing strips -->
+        <line x1="106" y1="195" x2="88" y2="210" stroke="#8b6030" stroke-width="3" opacity="0.7"/>
+        <line x1="134" y1="200" x2="150" y2="215" stroke="#8b6030" stroke-width="3" opacity="0.7"/>
+        <!-- Headband torn -->
+        <path d="M 108 162 Q 120 158 132 162" stroke="#4a3010" stroke-width="2" fill="none"/>
+        <!-- Dust cloud behind runner -->
+        <ellipse cx="70" cy="245" rx="30" ry="10" fill="#6b4c1e" opacity="0.5"/>
+        <ellipse cx="55" cy="238" rx="18" ry="8" fill="#6b4c1e" opacity="0.4"/>
+        <!-- David's camp – right side: tents -->
+        <!-- Tent 1 -->
+        <polygon points="680,230 740,150 800,230" fill="#8b6030"/>
+        <polygon points="680,230 740,150 800,230" fill="none" stroke="#5a3a10" stroke-width="2"/>
+        <line x1="740" y1="150" x2="740" y2="135" stroke="#5a3a10" stroke-width="3"/>
+        <!-- Tent 2 (smaller) -->
+        <polygon points="790,235 835,170 880,235" fill="#7a5020"/>
+        <polygon points="790,235 835,170 880,235" fill="none" stroke="#5a3a10" stroke-width="2"/>
+        <!-- Tent 3 (partial) -->
+        <polygon points="860,238 895,185 930,238" fill="#6b4018"/>
+        <!-- David standing – center right, watching -->
+        <!-- Robe -->
+        <ellipse cx="570" cy="210" rx="16" ry="28" fill="#2a4a6a"/>
+        <!-- Head with crown -->
+        <circle cx="570" cy="178" r="15" fill="#c09060"/>
+        <!-- Crown spikes -->
+        <polygon points="560,168 563,158 566,168" fill="#d4a017"/>
+        <polygon points="567,166 570,156 573,166" fill="#d4a017"/>
+        <polygon points="574,168 577,158 580,168" fill="#d4a017"/>
+        <!-- Crown base -->
+        <rect x="559" y="166" width="22" height="5" fill="#b8860b" rx="1"/>
+        <!-- Arms – watching pose -->
+        <line x1="554" y1="195" x2="535" y2="205" stroke="#2a4a6a" stroke-width="7" stroke-linecap="round"/>
+        <line x1="586" y1="195" x2="600" y2="205" stroke="#2a4a6a" stroke-width="7" stroke-linecap="round"/>
+        <!-- Men behind David -->
+        <circle cx="620" cy="185" r="11" fill="#b07050"/>
+        <ellipse cx="620" cy="208" rx="11" ry="18" fill="#5a3a20"/>
+        <circle cx="640" cy="188" r="10" fill="#a06040"/>
+        <ellipse cx="640" cy="210" rx="10" ry="16" fill="#4a3018"/>
+        <!-- Dust line on ground -->
+        <path d="M 0 240 Q 240 236 480 240 Q 720 244 960 240" stroke="#4a3010" stroke-width="1" fill="none" opacity="0.4"/>
+      </svg>
+      <div class="caption top-right">יום שלישי – דוד ואנשיו חוזרים לצקלג<br>ומבשר אחד בא מן המחנה – מלחמת גלבוע</div>
+      <div class="speech bottom-right" style="bottom:40px;right:180px;">הַאֲיֵה דָּוִד?!</div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Messenger tells David + David mourns -->
+  <div class="panel-row two">
+
+    <!-- Panel 2: Messenger speaks to David -->
+    <div class="panel" style="height:300px;">
+      <svg viewBox="0 0 460 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+        <defs>
+          <linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f5e6c8"/>
+            <stop offset="100%" stop-color="#e0c898"/>
+          </linearGradient>
+        </defs>
+        <rect width="460" height="300" fill="url(#bg2)"/>
+        <!-- Tent interior – fabric lines -->
+        <path d="M 0,0 Q 230,-20 460,0" stroke="#d4b880" stroke-width="1" fill="none" opacity="0.5"/>
+        <path d="M 0,0 L 0,300" stroke="#c8a860" stroke-width="2" opacity="0.4"/>
+        <path d="M 460,0 L 460,300" stroke="#c8a860" stroke-width="2" opacity="0.4"/>
+        <!-- Floor mat -->
+        <rect x="20" y="230" width="420" height="70" fill="#c8a060" rx="3"/>
+        <line x1="20" y1="240" x2="440" y2="240" stroke="#b89050" stroke-width="1" opacity="0.5"/>
+        <!-- Messenger – left, kneeling, torn clothes, dirt on face -->
+        <!-- Torn robe -->
+        <polygon points="80,180 120,180 130,300 70,300" fill="#8b6030" opacity="0.9"/>
+        <!-- Torn strips -->
+        <line x1="80" y1="195" x2="60" y2="220" stroke="#7a5020" stroke-width="4" opacity="0.8"/>
+        <line x1="118" y1="200" x2="138" y2="225" stroke="#7a5020" stroke-width="4" opacity="0.8"/>
+        <!-- Body -->
+        <ellipse cx="100" cy="170" rx="22" ry="30" fill="#7a5020"/>
+        <!-- Head bowed -->
+        <circle cx="100" cy="140" r="18" fill="#b88060"/>
+        <!-- Dirt streaks on face -->
+        <line x1="92" y1="135" x2="88" y2="148" stroke="#5a3a10" stroke-width="2" opacity="0.5"/>
+        <line x1="108" y1="136" x2="112" y2="149" stroke="#5a3a10" stroke-width="2" opacity="0.5"/>
+        <!-- Earth on head (mourning gesture) -->
+        <ellipse cx="100" cy="124" rx="20" ry="6" fill="#6b4c1e" opacity="0.8"/>
+        <ellipse cx="100" cy="122" rx="14" ry="4" fill="#5a3a10" opacity="0.7"/>
+        <!-- Kneeling arms – prostrate -->
+        <line x1="78" y1="180" x2="45" y2="215" stroke="#7a5020" stroke-width="8" stroke-linecap="round"/>
+        <line x1="122" y1="180" x2="158" y2="215" stroke="#7a5020" stroke-width="8" stroke-linecap="round"/>
+        <!-- David – right side, standing, receiving news -->
+        <!-- Kingly robe deep blue -->
+        <polygon points="295,190 345,190 360,300 280,300" fill="#1e3a5a"/>
+        <!-- Torso -->
+        <ellipse cx="320" cy="185" rx="26" ry="38" fill="#1e3a5a"/>
+        <!-- Head -->
+        <circle cx="320" cy="142" r="20" fill="#c09060"/>
+        <!-- Crown -->
+        <rect x="303" y="127" width="34" height="7" fill="#b8860b" rx="2"/>
+        <polygon points="308,127 311,116 314,127" fill="#d4a017"/>
+        <polygon points="317,125 320,114 323,125" fill="#d4a017"/>
+        <polygon points="326,127 329,116 332,127" fill="#d4a017"/>
+        <!-- Beard -->
+        <path d="M 308 152 Q 320 162 332 152 Q 328 170 320 174 Q 312 170 308 152" fill="#7a5030"/>
+        <!-- Arm raised – listening, distressed -->
+        <line x1="295" y1="172" x2="265" y2="155" stroke="#1e3a5a" stroke-width="10" stroke-linecap="round"/>
+        <line x1="345" y1="172" x2="370" y2="158" stroke="#1e3a5a" stroke-width="10" stroke-linecap="round"/>
+        <!-- Hand open – questioning -->
+        <circle cx="262" cy="152" r="8" fill="#b88060"/>
+        <!-- Expression lines on David -->
+        <path d="M 313 136 Q 316 132 320 133 Q 324 132 327 136" stroke="#8b5030" stroke-width="1.5" fill="none"/>
+        <!-- Small attendants in background -->
+        <circle cx="410" cy="170" r="10" fill="#a07050"/>
+        <ellipse cx="410" cy="192" rx="10" ry="15" fill="#5a4030"/>
+        <circle cx="430" cy="172" r="9" fill="#907040"/>
+        <ellipse cx="430" cy="193" rx="9" ry="14" fill="#4a3020"/>
+      </svg>
+      <div class="caption top-right">המבשר מספר: שאול ויהונתן נפלו בהר הגלבוע</div>
+      <div class="speech bottom-left" style="bottom:75px;left:155px;max-width:52%;">
+        נָס הָעָם מִן הַמִּלְחָמָה…<br>
+        גַּם שָׁאוּל וִיהוֹנָתָן<br>
+        בְּנוֹ מֵתוּ
+      </div>
+      <div class="panel-num">2</div>
+    </div>
+
+    <!-- Panel 3: David and men weeping / tearing clothes -->
+    <div class="panel" style="height:300px;">
+      <svg viewBox="0 0 460 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+        <defs>
+          <linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e8d5a0"/>
+            <stop offset="100%" stop-color="#d0b870"/>
+          </linearGradient>
+        </defs>
+        <rect width="460" height="300" fill="url(#bg3)"/>
+        <!-- Ground -->
+        <rect x="0" y="260" width="460" height="40" fill="#b89850"/>
+        <!-- Men tearing their clothes - group of 4-5 figures -->
+        <!-- Figure 1 – tearing robe, center-left -->
+        <ellipse cx="95" cy="195" rx="18" ry="32" fill="#5a3a20"/>
+        <circle cx="95" cy="157" r="16" fill="#b07050"/>
+        <!-- Torn robe strips flying -->
+        <line x1="80" y1="185" x2="50" y2="175" stroke="#5a3a20" stroke-width="5" stroke-linecap="round"/>
+        <line x1="110" y1="185" x2="140" y2="172" stroke="#5a3a20" stroke-width="5" stroke-linecap="round"/>
+        <!-- Hands gripping robe -->
+        <circle cx="78" cy="193" r="7" fill="#a07040"/>
+        <circle cx="112" cy="193" r="7" fill="#a07040"/>
+        <!-- Mouth open – wailing -->
+        <ellipse cx="95" cy="162" rx="6" ry="5" fill="#7a3020"/>
+        <!-- Figure 2 – prostrate, forehead to ground -->
+        <ellipse cx="200" cy="240" rx="40" ry="14" fill="#4a3018"/>
+        <ellipse cx="180" cy="242" rx="14" ry="10" fill="#a07040"/>
+        <!-- Dust on head -->
+        <ellipse cx="175" cy="236" rx="16" ry="5" fill="#6b4c1e" opacity="0.9"/>
+        <!-- Figure 3 – weeping, hands on face -->
+        <ellipse cx="300" cy="195" rx="17" ry="30" fill="#6a4a28"/>
+        <circle cx="300" cy="160" r="15" fill="#b07050"/>
+        <line x1="291" y1="162" x2="285" y2="155" stroke="#a06040" stroke-width="6" stroke-linecap="round"/>
+        <line x1="309" y1="162" x2="315" y2="155" stroke="#a06040" stroke-width="6" stroke-linecap="round"/>
+        <!-- Tear drops -->
+        <ellipse cx="294" cy="170" rx="3" ry="5" fill="#7ab0d0" opacity="0.8"/>
+        <ellipse cx="306" cy="172" rx="3" ry="4" fill="#7ab0d0" opacity="0.7"/>
+        <!-- Figure 4 – David, center, robe torn, head bowed -->
+        <polygon points="215,215 255,215 265,300 205,300" fill="#1e3a5a"/>
+        <!-- Torn robe piece -->
+        <polygon points="215,215 195,240 205,215" fill="#1e3a5a" opacity="0.7"/>
+        <polygon points="255,215 275,238 265,215" fill="#1e3a5a" opacity="0.7"/>
+        <ellipse cx="235" cy="205" rx="22" ry="30" fill="#1e3a5a"/>
+        <circle cx="235" cy="170" r="18" fill="#c09060"/>
+        <!-- Crown fallen / tilted -->
+        <rect x="222" y="156" width="26" height="6" fill="#b8860b" rx="2" transform="rotate(-15,235,160)"/>
+        <polygon points="225,156 227,147 229,156" fill="#d4a017" transform="rotate(-15,235,160)"/>
+        <!-- Head bowed deep -->
+        <ellipse cx="235" cy="185" rx="8" ry="4" fill="#7a5030"/>
+        <!-- Hands over face / tearing -->
+        <line x1="218" y1="195" x2="200" y2="185" stroke="#1e3a5a" stroke-width="8" stroke-linecap="round"/>
+        <line x1="252" y1="195" x2="268" y2="183" stroke="#1e3a5a" stroke-width="8" stroke-linecap="round"/>
+        <!-- Tear drop larger -->
+        <ellipse cx="230" cy="187" rx="4" ry="7" fill="#5a8ab0" opacity="0.8"/>
+        <!-- Figure 5 – right, wailing upward -->
+        <ellipse cx="390" cy="195" rx="15" ry="28" fill="#5a3a18"/>
+        <circle cx="390" cy="162" r="14" fill="#a06840"/>
+        <!-- Arms raised to sky -->
+        <line x1="376" y1="180" x2="355" y2="158" stroke="#5a3a18" stroke-width="8" stroke-linecap="round"/>
+        <line x1="404" y1="180" x2="422" y2="156" stroke="#5a3a18" stroke-width="8" stroke-linecap="round"/>
+        <!-- Mouth open wailing -->
+        <ellipse cx="390" cy="168" rx="5" ry="7" fill="#6a2a18"/>
+        <!-- Sound waves from wailing -->
+        <path d="M 400 160 Q 415 150 430 160" stroke="#4a2a10" stroke-width="2" fill="none" opacity="0.6"/>
+        <path d="M 402 155 Q 420 143 438 155" stroke="#4a2a10" stroke-width="1.5" fill="none" opacity="0.4"/>
+      </svg>
+      <div class="caption top-right">וַיִּסְפְּדוּ וַיִּבְכּוּ וַיָּצֻמוּ עַד-הָעָרֶב</div>
+      <div class="caption bot-left">דוד קרע את בגדיו, וכל אנשיו עמו</div>
+      <div class="panel-num">3</div>
+    </div>
+
+  </div>
+
+  <!-- ROW 3: The lament begins + "Daughters of Israel" -->
+  <div class="panel-row two-wide">
+
+    <!-- Panel 4: David with harp / composing the lament -->
+    <div class="panel" style="height:340px;">
+      <svg viewBox="0 0 580 340" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+        <defs>
+          <linearGradient id="bg4" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0d0805"/>
+            <stop offset="40%" stop-color="#1a1008"/>
+            <stop offset="100%" stop-color="#0a0608"/>
+          </linearGradient>
+          <radialGradient id="lampglow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ff8820" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+        </defs>
+        <rect width="580" height="340" fill="url(#bg4)"/>
+        <!-- Oil lamp glow -->
+        <circle cx="100" cy="80" r="90" fill="url(#lampglow)"/>
+        <!-- Oil lamp -->
+        <ellipse cx="100" cy="95" rx="22" ry="10" fill="#b8860b"/>
+        <ellipse cx="100" cy="91" rx="18" ry="7" fill="#d4a017"/>
+        <line x1="100" y1="84" x2="100" y2="60" stroke="#ff8820" stroke-width="3" opacity="0.8"/>
+        <!-- Flame -->
+        <path d="M 97 62 Q 100 50 103 62 Q 105 56 100 52 Q 95 56 97 62" fill="#ffcc40"/>
+        <path d="M 98 64 Q 100 54 102 64 Q 103 58 100 56 Q 97 58 98 64" fill="white" opacity="0.5"/>
+        <!-- Parchment / scroll on ground -->
+        <rect x="30" y="230" width="220" height="80" rx="5" fill="#f5e6c8" opacity="0.9"/>
+        <line x1="30" y1="250" x2="250" y2="250" stroke="#c8a460" stroke-width="1" opacity="0.5"/>
+        <line x1="30" y1="268" x2="250" y2="268" stroke="#c8a460" stroke-width="1" opacity="0.5"/>
+        <line x1="30" y1="286" x2="250" y2="286" stroke="#c8a460" stroke-width="1" opacity="0.5"/>
+        <!-- Hebrew text lines on scroll -->
+        <text x="240" y="248" font-family="Georgia,serif" font-size="11" fill="#4a3010" text-anchor="end" direction="rtl">הַצְּבִי יִשְׂרָאֵל עַל-בָּמוֹתֶיךָ חָלָל</text>
+        <text x="240" y="266" font-family="Georgia,serif" font-size="11" fill="#4a3010" text-anchor="end" direction="rtl">אֵיךְ נָפְלוּ גִבּוֹרִים</text>
+        <text x="240" y="284" font-family="Georgia,serif" font-size="11" fill="#4a3010" text-anchor="end" direction="rtl">אַל-תַּגִּידוּ בְגַת...</text>
+        <!-- Scroll rollers -->
+        <rect x="22" y="228" width="10" height="84" rx="5" fill="#8b6030"/>
+        <rect x="248" y="228" width="10" height="84" rx="5" fill="#8b6030"/>
+        <!-- David sitting, playing kinor (harp) -->
+        <!-- Ground -->
+        <rect x="0" y="300" width="580" height="40" fill="#1a1008"/>
+        <!-- Robe flowing -->
+        <polygon points="280,210 340,210 360,340 260,340" fill="#1a2e48"/>
+        <ellipse cx="305" cy="205" rx="35" ry="50" fill="#1a2e48"/>
+        <!-- Torso -->
+        <ellipse cx="305" cy="185" rx="28" ry="36" fill="#1e3a5a"/>
+        <!-- Head bowed in contemplation -->
+        <circle cx="305" cy="145" r="22" fill="#c09060"/>
+        <!-- Crown set aside – on ground -->
+        <ellipse cx="400" cy="305" rx="20" ry="7" fill="#b8860b"/>
+        <polygon points="385,302 388,293 391,302" fill="#d4a017"/>
+        <polygon points="395,300 398,291 401,300" fill="#d4a017"/>
+        <polygon points="405,302 408,293 411,302" fill="#d4a017"/>
+        <!-- David's hair/beard -->
+        <path d="M 288 155 Q 305 168 322 155 Q 318 176 305 180 Q 292 176 288 155" fill="#7a5030"/>
+        <!-- Eyes closed / downcast -->
+        <path d="M 297 140 Q 301 137 305 138 Q 309 137 313 140" stroke="#4a2a10" stroke-width="1.5" fill="none"/>
+        <!-- The kinor (lyre/harp) -->
+        <!-- Main body -->
+        <path d="M 340 160 Q 360 150 375 170 Q 385 200 370 230 Q 355 240 335 230 Q 310 210 320 175 Q 328 160 340 160" fill="#8b4513" stroke="#5a2a08" stroke-width="2"/>
+        <!-- Strings -->
+        <line x1="338" y1="168" x2="345" y2="228" stroke="#d4c090" stroke-width="1.2" opacity="0.9"/>
+        <line x1="347" y1="162" x2="352" y2="228" stroke="#d4c090" stroke-width="1.2" opacity="0.9"/>
+        <line x1="356" y1="160" x2="360" y2="226" stroke="#d4c090" stroke-width="1.2" opacity="0.9"/>
+        <line x1="364" y1="163" x2="367" y2="224" stroke="#d4c090" stroke-width="1.2" opacity="0.9"/>
+        <line x1="371" y1="168" x2="372" y2="220" stroke="#d4c090" stroke-width="1.2" opacity="0.9"/>
+        <!-- Arm holding kinor -->
+        <line x1="278" y1="188" x2="318" y2="195" stroke="#1e3a5a" stroke-width="12" stroke-linecap="round"/>
+        <circle cx="320" cy="195" r="9" fill="#b07040"/>
+        <!-- Right arm – plucking strings -->
+        <line x1="332" y1="188" x2="358" y2="200" stroke="#1e3a5a" stroke-width="10" stroke-linecap="round"/>
+        <circle cx="362" cy="202" r="8" fill="#b07040"/>
+        <!-- Music notes floating -->
+        <text x="420" y="130" font-family="Georgia,serif" font-size="22" fill="#d4a017" opacity="0.6">♩</text>
+        <text x="450" y="100" font-family="Georgia,serif" font-size="16" fill="#d4a017" opacity="0.4">♪</text>
+        <text x="470" y="145" font-family="Georgia,serif" font-size="18" fill="#d4a017" opacity="0.5">♫</text>
+        <!-- Shadow / sorrow lines radiating -->
+        <path d="M 305 145 L 240 50" stroke="#3a2a18" stroke-width="1" opacity="0.3"/>
+        <path d="M 305 145 L 380 40" stroke="#3a2a18" stroke-width="1" opacity="0.25"/>
+      </svg>
+      <div class="caption top-right" style="background:rgba(26,15,8,0.9);color:#d4a017;">
+        דוד חיבר את קינת הקשת<br>לבני יהודה ללמד את הילדים
+      </div>
+      <div class="lament-box" style="bottom:12px;left:0;right:0;width:100%;">
+        הַצְּבִי יִשְׂרָאֵל עַל-בָּמוֹתֶיךָ חָלָל
+      </div>
+      <div class="panel-num">4</div>
+    </div>
+
+    <!-- Panel 5: "Tell it not in Gath" – the battle scene in background -->
+    <div class="panel" style="height:340px;">
+      <svg viewBox="0 0 360 340" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+        <defs>
+          <linearGradient id="bg5" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3a0808"/>
+            <stop offset="60%" stop-color="#5a1a0a"/>
+            <stop offset="100%" stop-color="#8b3a10"/>
+          </linearGradient>
+        </defs>
+        <rect width="360" height="340" fill="url(#bg5)"/>
+        <!-- Battle scene silhouettes - Mount Gilboa -->
+        <!-- Mountain -->
+        <polygon points="0,340 0,180 80,100 160,170 240,90 320,155 360,130 360,340" fill="#1a0808"/>
+        <!-- Fallen warriors silhouettes on mountain -->
+        <!-- Saul fallen -->
+        <line x1="170" y1="173" x2="220" y2="195" stroke="#2a0a0a" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="168" cy="170" r="8" fill="#2a0a0a"/>
+        <!-- Crown near Saul -->
+        <polygon points="155,185 158,177 161,185" fill="#5a3a00" opacity="0.6"/>
+        <rect x="150" y="183" width="15" height="4" fill="#4a3000" opacity="0.6"/>
+        <!-- Spear in ground -->
+        <line x1="185" y1="150" x2="195" y2="200" stroke="#3a1a00" stroke-width="4" opacity="0.7"/>
+        <!-- Jonathan fallen -->
+        <line x1="235" y1="100" x2="270" y2="118" stroke="#2a0a0a" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="232" cy="97" r="7" fill="#2a0a0a"/>
+        <!-- Sword near Jonathan -->
+        <line x1="255" y1="120" x2="285" y2="108" stroke="#3a1a00" stroke-width="3" opacity="0.7"/>
+        <!-- More fallen warriors -->
+        <line x1="80" y1="145" x2="110" y2="160" stroke="#2a0a0a" stroke-width="6" stroke-linecap="round"/>
+        <line x1="290" y1="160" x2="320" y2="148" stroke="#2a0a0a" stroke-width="6" stroke-linecap="round"/>
+        <!-- Philistine city Gath - upper right, ominous -->
+        <rect x="260" y="20" width="90" height="60" fill="#2a1010" opacity="0.7"/>
+        <polygon points="260,20 305,0 350,20" fill="#1a0808" opacity="0.8"/>
+        <rect x="275" y="30" width="12" height="18" fill="#3a0808" opacity="0.9"/>
+        <rect x="298" y="32" width="12" height="18" fill="#3a0808" opacity="0.9"/>
+        <rect x="320" y="28" width="12" height="18" fill="#3a0808" opacity="0.9"/>
+        <!-- X over Gath – "tell it not" -->
+        <line x1="255" y1="12" x2="355" y2="88" stroke="#8b1a00" stroke-width="4" opacity="0.8"/>
+        <line x1="355" y1="12" x2="255" y2="88" stroke="#8b1a00" stroke-width="4" opacity="0.8"/>
+        <!-- Arrows raining down -->
+        <line x1="150" y1="20" x2="145" y2="55" stroke="#6a4a00" stroke-width="2" opacity="0.7"/>
+        <polygon points="143,55 148,48 153,55" fill="#6a4a00" opacity="0.7"/>
+        <line x1="170" y1="15" x2="165" y2="50" stroke="#6a4a00" stroke-width="2" opacity="0.7"/>
+        <polygon points="163,50 168,43 173,50" fill="#6a4a00" opacity="0.7"/>
+        <line x1="190" y1="18" x2="185" y2="53" stroke="#6a4a00" stroke-width="2" opacity="0.6"/>
+        <polygon points="183,53 188,46 193,53" fill="#6a4a00" opacity="0.6"/>
+        <!-- Blood red sky slashes -->
+        <path d="M 0 40 Q 60 30 120 45" stroke="#8b1a00" stroke-width="3" fill="none" opacity="0.5"/>
+        <path d="M 0 60 Q 80 48 160 62" stroke="#6b1200" stroke-width="2" fill="none" opacity="0.4"/>
+        <!-- Shield of Saul cast away -->
+        <ellipse cx="55" cy="220" rx="22" ry="28" fill="#3a2010" opacity="0.9"/>
+        <ellipse cx="55" cy="220" rx="16" ry="22" fill="none" stroke="#5a3010" stroke-width="2" opacity="0.7"/>
+        <line x1="55" y1="196" x2="55" y2="244" stroke="#5a3010" stroke-width="2" opacity="0.5"/>
+      </svg>
+      <div class="caption top-left" style="background:rgba(26,15,8,0.92);color:#e08060;max-width:70%;">
+        אַל-תַּגִּידוּ בְגַת<br>
+        אַל-תְּבַשְּׂרוּ בְּחוּצֹת אַשְׁקְלוֹן
+      </div>
+      <div class="caption bot-right" style="background:rgba(100,10,10,0.88);color:#f5c090;">
+        הגלבוע – שם נפלו שאול ויהונתן
+      </div>
+      <div class="panel-num">5</div>
+    </div>
+
+  </div>
+
+  <!-- ROW 4: The great lament verse + Jonathan's love -->
+  <div class="panel-row three">
+
+    <!-- Panel 6: "Mountains of Gilboa" – curse -->
+    <div class="panel" style="height:320px;">
+      <svg viewBox="0 0 300 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+        <defs>
+          <linearGradient id="bg6" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0a0a0a"/>
+            <stop offset="100%" stop-color="#2a1a0a"/>
+          </linearGradient>
+        </defs>
+        <rect width="300" height="320" fill="url(#bg6)"/>
+        <!-- Dry barren mountains – cursed Gilboa -->
+        <polygon points="0,320 0,180 60,80 120,160 180,60 240,140 300,100 300,320" fill="#1a1008"/>
+        <!-- No dew, no rain – bare rock -->
+        <path d="M 0 120 Q 50 115 100 125 Q 150 118 200 128 Q 250 120 300 125" stroke="#3a2a10" stroke-width="1" fill="none" opacity="0.4"/>
+        <!-- Dry cracked earth -->
+        <line x1="40" y1="270" x2="70" y2="290" stroke="#4a3010" stroke-width="1" opacity="0.5"/>
+        <line x1="80" y1="265" x2="65" y2="295" stroke="#4a3010" stroke-width="1" opacity="0.4"/>
+        <line x1="150" y1="280" x2="180" y2="300" stroke="#4a3010" stroke-width="1" opacity="0.5"/>
+        <line x1="220" y1="270" x2="240" y2="295" stroke="#4a3010" stroke-width="1" opacity="0.4"/>
+        <!-- Dead trees / stumps -->
+        <line x1="50" y1="190" x2="50" y2="240" stroke="#3a2010" stroke-width="5"/>
+        <line x1="50" y1="220" x2="30" y2="210" stroke="#3a2010" stroke-width="3"/>
+        <line x1="50" y1="215" x2="68" y2="205" stroke="#3a2010" stroke-width="3"/>
+        <line x1="200" y1="185" x2="200" y2="230" stroke="#3a2010" stroke-width="4"/>
+        <line x1="200" y1="210" x2="182" y2="200" stroke="#3a2010" stroke-width="2"/>
+        <!-- No dew drops – crossed out drops -->
+        <circle cx="100" cy="60" r="6" fill="none" stroke="#3a5a7a" stroke-width="2" opacity="0.5"/>
+        <line x1="94" y1="54" x2="106" y2="66" stroke="#3a5a7a" stroke-width="2" opacity="0.5"/>
+        <circle cx="200" cy="50" r="6" fill="none" stroke="#3a5a7a" stroke-width="2" opacity="0.4"/>
+        <line x1="194" y1="44" x2="206" y2="56" stroke="#3a5a7a" stroke-width="2" opacity="0.4"/>
+        <!-- Shield of Saul -->
+        <ellipse cx="150" cy="255" rx="30" ry="38" fill="#2a1808" stroke="#5a3a10" stroke-width="2"/>
+        <ellipse cx="150" cy="255" rx="22" ry="30" fill="none" stroke="#4a2808" stroke-width="1"/>
+        <!-- Shield not anointed with oil -->
+        <text x="150" y="260" font-family="Georgia,serif" font-size="9" fill="#5a3a10" text-anchor="middle">כִּי שָׁם</text>
+        <text x="150" y="272" font-family="Georgia,serif" font-size="9" fill="#5a3a10" text-anchor="middle">נִגְעַל</text>
+      </svg>
+      <div class="lament-box" style="top:8px;left:0;right:0;width:100%;font-size:clamp(9px,1.8vw,12px);">
+        הָרֵי בַגִּלְבֹּעַ<br>
+        אַל-טַל וְאַל-מָטָר עֲלֵיכֶם
+      </div>
+      <div class="panel-num">6</div>
+    </div>
+
+    <!-- Panel 7: Saul and Jonathan in life – flashback, golden hue -->
+    <div class="panel" style="height:320px;">
+      <svg viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+        <defs>
+          <linearGradient id="bg7" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f5e6c8"/>
+            <stop offset="50%" stop-color="#e8d090"/>
+            <stop offset="100%" stop-color="#c8a850"/>
+          </linearGradient>
+          <radialGradient id="glow7" cx="50%" cy="40%" r="50%">
+            <stop offset="0%" stop-color="#fff8e0" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+        </defs>
+        <rect width="400" height="320" fill="url(#bg7)"/>
+        <ellipse cx="200" cy="130" rx="160" ry="100" fill="url(#glow7)"/>
+        <!-- Memory / flashback frame – rounded corners, faded edges -->
+        <rect x="0" y="0" width="400" height="320" fill="none" stroke="#c8a460" stroke-width="12" opacity="0.4"/>
+        <!-- Ground -->
+        <rect x="0" y="275" width="400" height="45" fill="#c8a060"/>
+        <!-- Saul standing tall – left, in glory -->
+        <!-- Saul robe – royal purple/blue -->
+        <polygon points="80,210 140,210 155,320 65,320" fill="#2a1a5a"/>
+        <ellipse cx="110" cy="200" rx="32" ry="44" fill="#2a1a5a"/>
+        <!-- Saul torso -->
+        <ellipse cx="110" cy="175" rx="24" ry="30" fill="#3a2a6a"/>
+        <!-- Breastplate -->
+        <rect x="94" y="168" width="32" height="26" fill="#4a6080" rx="3"/>
+        <line x1="94" y1="175" x2="126" y2="175" stroke="#7a9ab0" stroke-width="1" opacity="0.6"/>
+        <line x1="94" y1="182" x2="126" y2="182" stroke="#7a9ab0" stroke-width="1" opacity="0.6"/>
+        <!-- Head -->
+        <circle cx="110" cy="138" r="22" fill="#c09060"/>
+        <!-- Crown – full, glorious -->
+        <rect x="92" y="121" width="36" height="9" fill="#b8860b" rx="2"/>
+        <polygon points="96,121 99,108 102,121" fill="#d4a017"/>
+        <polygon points="106,119 109,106 112,119" fill="#d4c050"/>
+        <polygon points="116,121 119,108 122,121" fill="#d4a017"/>
+        <!-- Gems on crown -->
+        <circle cx="109" cy="112" r="3" fill="#e04020"/>
+        <!-- Beard - kingly -->
+        <path d="M 98 148 Q 110 160 122 148 Q 118 168 110 172 Q 102 168 98 148" fill="#5a3820"/>
+        <!-- Spear in hand – tall -->
+        <line x1="145" y1="90" x2="152" y2="280" stroke="#7a4a10" stroke-width="5"/>
+        <polygon points="140,93 152,68 164,93" fill="#8899aa"/>
+        <!-- Arm holding spear -->
+        <line x1="132" y1="175" x2="150" y2="180" stroke="#2a1a5a" stroke-width="10" stroke-linecap="round"/>
+        <!-- Jonathan – right, athletic, bow in hand -->
+        <polygon points="250,215 305,215 315,320 240,320" fill="#2a5a3a"/>
+        <ellipse cx="278" cy="203" rx="28" ry="40" fill="#2a5a3a"/>
+        <!-- Jonathan torso -->
+        <ellipse cx="278" cy="178" rx="22" ry="28" fill="#3a6a4a"/>
+        <!-- Head -->
+        <circle cx="278" cy="148" r="20" fill="#c09060"/>
+        <!-- Headband -->
+        <rect x="261" y="140" width="34" height="6" fill="#8b4513" rx="2"/>
+        <!-- Jonathan's beard – younger, shorter -->
+        <path d="M 268 157 Q 278 164 288 157 Q 285 170 278 173 Q 271 170 268 157" fill="#6a4030"/>
+        <!-- Bow -->
+        <path d="M 310 105 Q 330 148 310 195" stroke="#8b4513" stroke-width="5" fill="none"/>
+        <line x1="310" y1="105" x2="310" y2="195" stroke="#d4c090" stroke-width="1.5"/>
+        <!-- Jonathan arm with bow -->
+        <line x1="295" y1="175" x2="312" y2="165" stroke="#2a5a3a" stroke-width="9" stroke-linecap="round"/>
+        <!-- Arrow quiver on back -->
+        <rect x="250" y="158" width="12" height="35" fill="#6b3a18" rx="3"/>
+        <line x1="252" y1="162" x2="252" y2="193" stroke="#8b4a20" stroke-width="1.5"/>
+        <line x1="256" y1="160" x2="256" y2="193" stroke="#8b4a20" stroke-width="1.5"/>
+        <!-- Unity – Saul and Jonathan side by side, arms around shoulders -->
+        <path d="M 140 175 Q 200 160 245 175" stroke="#8b6030" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <!-- Glow of memory -->
+        <rect x="0" y="0" width="400" height="320" fill="#fff8e0" opacity="0.06"/>
+      </svg>
+      <div class="caption top-right" style="background:rgba(100,70,0,0.85);color:#f5e6c8;">
+        שָׁאוּל וִיהוֹנָתָן<br>
+        הַנֶּאֱהָבִים וְהַנְּעִימִם
+      </div>
+      <div class="caption bot-left" style="background:rgba(100,70,0,0.85);color:#f5e6c8;">
+        בְּחַיֵּיהֶם וּבְמוֹתָם<br>לֹא נִפְרָדוּ
+      </div>
+      <div class="panel-num">7</div>
+    </div>
+
+    <!-- Panel 8: David weeping over Jonathan -->
+    <div class="panel" style="height:320px;">
+      <svg viewBox="0 0 300 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+        <defs>
+          <radialGradient id="bg8" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#1a0a0a"/>
+            <stop offset="100%" stop-color="#0a0505"/>
+          </radialGradient>
+        </defs>
+        <rect width="300" height="320" fill="url(#bg8)"/>
+        <!-- David collapsed in grief, close-up -->
+        <!-- Ground -->
+        <rect x="0" y="270" width="300" height="50" fill="#1a1008"/>
+        <!-- David's robe – torn, sprawled -->
+        <polygon points="80,200 180,200 200,320 60,320" fill="#142840"/>
+        <!-- Torn piece -->
+        <polygon points="80,200 50,230 70,200" fill="#0e1e30" opacity="0.8"/>
+        <!-- Body hunched forward -->
+        <ellipse cx="130" cy="195" rx="55" ry="42" fill="#142840"/>
+        <!-- Head buried in hands -->
+        <circle cx="130" cy="155" r="24" fill="#c09060"/>
+        <!-- Hands covering face -->
+        <!-- Left hand -->
+        <ellipse cx="112" cy="155" rx="14" ry="10" fill="#b07040" transform="rotate(-30,112,155)"/>
+        <!-- Right hand -->
+        <ellipse cx="148" cy="155" rx="14" ry="10" fill="#b07040" transform="rotate(30,148,155)"/>
+        <!-- Fingers -->
+        <line x1="103" y1="150" x2="98" y2="144" stroke="#a06030" stroke-width="3" stroke-linecap="round"/>
+        <line x1="106" y1="146" x2="102" y2="139" stroke="#a06030" stroke-width="3" stroke-linecap="round"/>
+        <line x1="110" y1="143" x2="107" y2="136" stroke="#a06030" stroke-width="3" stroke-linecap="round"/>
+        <line x1="157" y1="150" x2="162" y2="144" stroke="#a06030" stroke-width="3" stroke-linecap="round"/>
+        <line x1="154" y1="146" x2="158" y2="139" stroke="#a06030" stroke-width="3" stroke-linecap="round"/>
+        <line x1="150" y1="143" x2="153" y2="136" stroke="#a06030" stroke-width="3" stroke-linecap="round"/>
+        <!-- Tears running down – multiple drops -->
+        <ellipse cx="118" cy="164" rx="3" ry="6" fill="#5a8ab0" opacity="0.8"/>
+        <ellipse cx="123" cy="170" rx="2.5" ry="5" fill="#5a8ab0" opacity="0.7"/>
+        <ellipse cx="137" cy="165" rx="3" ry="6" fill="#5a8ab0" opacity="0.8"/>
+        <ellipse cx="142" cy="172" rx="2.5" ry="5" fill="#5a8ab0" opacity="0.6"/>
+        <!-- Tears on ground – puddle -->
+        <ellipse cx="130" cy="200" rx="18" ry="5" fill="#3a6a90" opacity="0.4"/>
+        <!-- Jonathan's sword – laid in front of David -->
+        <path d="M 60 225 L 210 240" stroke="#8899aa" stroke-width="5" stroke-linecap="round"/>
+        <!-- Sword guard -->
+        <line x1="85" y1="218" x2="85" y2="232" stroke="#8899aa" stroke-width="8" stroke-linecap="round"/>
+        <!-- Sword pommel -->
+        <circle cx="58" cy="224" r="8" fill="#8899aa"/>
+        <!-- Crown discarded near sword -->
+        <ellipse cx="240" cy="255" rx="18" ry="6" fill="#b8860b" opacity="0.7"/>
+        <!-- Shadowed atmosphere -->
+        <rect x="0" y="0" width="300" height="320" fill="#0a0505" opacity="0.2"/>
+      </svg>
+      <div class="lament-box" style="top:8px;left:0;right:0;width:100%;font-size:clamp(9px,1.7vw,12px);">
+        צַר-לִי עָלֶיךָ אָחִי יְהוֹנָתָן<br>
+        נִפְלְאַתָה אַהֲבָתְךָ לִי<br>
+        מֵאַהֲבַת נָשִׁים
+      </div>
+      <div class="panel-num">8</div>
+    </div>
+
+  </div>
+
+  <!-- ROW 5: Full width – "How the mighty have fallen" finale -->
+  <div class="panel-row one">
+    <div class="panel" style="height:320px;">
+      <svg viewBox="0 0 960 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+        <defs>
+          <linearGradient id="bg9" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#0a0505"/>
+            <stop offset="30%" stop-color="#1a0808"/>
+            <stop offset="70%" stop-color="#1a0808"/>
+            <stop offset="100%" stop-color="#0a0505"/>
+          </linearGradient>
+          <linearGradient id="ground9" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3a2010"/>
+            <stop offset="100%" stop-color="#1a0a05"/>
+          </linearGradient>
+          <radialGradient id="center-light" cx="50%" cy="30%" r="40%">
+            <stop offset="0%" stop-color="#4a2010" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+        </defs>
+        <rect width="960" height="320" fill="url(#bg9)"/>
+        <ellipse cx="480" cy="100" rx="300" ry="200" fill="url(#center-light)"/>
+        <!-- Ground -->
+        <rect x="0" y="265" width="960" height="55" fill="url(#ground9)"/>
+        <!-- Horizon mountains dark -->
+        <polygon points="0,265 0,180 120,100 240,190 360,110 480,170 600,105 720,175 840,100 960,170 960,265" fill="#0d0605"/>
+        <!-- The fallen – multiple warriors across width -->
+        <!-- Saul – center left, with crown fallen -->
+        <!-- Body -->
+        <line x1="320" y1="215" x2="420" y2="230" stroke="#1e2a4a" stroke-width="22" stroke-linecap="round"/>
+        <circle cx="315" cy="213" r="17" fill="#b07040"/>
+        <!-- Crown on ground -->
+        <ellipse cx="285" cy="240" rx="22" ry="8" fill="#b8860b" opacity="0.8"/>
+        <polygon points="272,240 275,228 278,240" fill="#c4900a"/>
+        <polygon points="282,238 285,226 288,238" fill="#d4a017"/>
+        <polygon points="292,240 295,228 298,240" fill="#c4900a"/>
+        <!-- Spear broken -->
+        <line x1="370" y1="175" x2="395" y2="235" stroke="#7a4a10" stroke-width="5"/>
+        <line x1="395" y1="235" x2="430" y2="270" stroke="#7a4a10" stroke-width="5"/>
+        <!-- Break mark at joint -->
+        <line x1="393" y1="230" x2="400" y2="238" stroke="#3a1a00" stroke-width="6"/>
+        <!-- Jonathan – center right -->
+        <line x1="540" y1="210" x2="650" y2="220" stroke="#1e4a2a" stroke-width="20" stroke-linecap="round"/>
+        <circle cx="535" cy="208" r="16" fill="#b07040"/>
+        <!-- Jonathan's bow – snapped -->
+        <path d="M 590 185 Q 605 200 590 225" stroke="#8b4513" stroke-width="5" fill="none"/>
+        <line x1="590" y1="185" x2="605" y2="207" stroke="#d4c090" stroke-width="1.5"/>
+        <!-- Arrow nearby -->
+        <line x1="560" y1="240" x2="620" y2="250" stroke="#6b4a10" stroke-width="3"/>
+        <polygon points="617,245 624,255 627,248" fill="#6b4a10"/>
+        <!-- Fallen warriors left side -->
+        <line x1="50" y1="220" x2="130" y2="235" stroke="#3a2a1a" stroke-width="16" stroke-linecap="round"/>
+        <circle cx="45" cy="218" r="14" fill="#a06030"/>
+        <line x1="150" y1="215" x2="220" y2="228" stroke="#3a2a1a" stroke-width="15" stroke-linecap="round"/>
+        <circle cx="145" cy="212" r="13" fill="#a06030"/>
+        <!-- Fallen warriors right side -->
+        <line x1="720" y1="218" x2="800" y2="230" stroke="#3a2a1a" stroke-width="16" stroke-linecap="round"/>
+        <circle cx="715" cy="215" r="13" fill="#a06030"/>
+        <line x1="830" y1="220" x2="910" y2="232" stroke="#3a2a1a" stroke-width="14" stroke-linecap="round"/>
+        <circle cx="825" cy="217" r="12" fill="#a06030"/>
+        <!-- Swords and shields scattered -->
+        <line x1="100" y1="248" x2="180" y2="260" stroke="#7a8a9a" stroke-width="4"/>
+        <ellipse cx="250" cy="258" rx="20" ry="26" fill="#2a2010" stroke="#4a3a18" stroke-width="2"/>
+        <line x1="450" y1="255" x2="500" y2="265" stroke="#7a8a9a" stroke-width="3"/>
+        <ellipse cx="700" cy="260" rx="18" ry="22" fill="#2a2010" stroke="#4a3a18" stroke-width="2"/>
+        <line x1="780" y1="252" x2="850" y2="262" stroke="#7a8a9a" stroke-width="3"/>
+        <!-- Blood on ground -->
+        <ellipse cx="380" cy="262" rx="25" ry="8" fill="#5a0a0a" opacity="0.6"/>
+        <ellipse cx="600" cy="258" rx="20" ry="7" fill="#5a0a0a" opacity="0.5"/>
+        <!-- The central lament text in Hebrew – massive -->
+        <text x="480" y="90" font-family="Georgia,Times New Roman,serif" font-size="38" fill="#b8860b" text-anchor="middle" letter-spacing="4" opacity="0.95"
+              style="text-shadow: 0 0 20px rgba(184,134,11,0.8);">
+          אֵיךְ נָפְלוּ גִבּוֹרִים
+        </text>
+        <text x="480" y="130" font-family="Georgia,Times New Roman,serif" font-size="20" fill="#8b6030" text-anchor="middle" letter-spacing="2" opacity="0.8">
+          וַיֹּאבְדוּ כְּלֵי מִלְחָמָה
+        </text>
+        <!-- Decorative line under text -->
+        <line x1="200" y1="145" x2="760" y2="145" stroke="#6b4c1e" stroke-width="1" opacity="0.5"/>
+        <!-- Stars beginning to appear in dark sky -->
+        <circle cx="100" cy="40" r="1.5" fill="white" opacity="0.6"/>
+        <circle cx="200" cy="25" r="1" fill="white" opacity="0.5"/>
+        <circle cx="350" cy="55" r="1.5" fill="white" opacity="0.5"/>
+        <circle cx="850" cy="30" r="1.5" fill="white" opacity="0.6"/>
+        <circle cx="750" cy="50" r="1" fill="white" opacity="0.4"/>
+        <circle cx="900" cy="60" r="1.5" fill="white" opacity="0.5"/>
+      </svg>
+      <div class="panel-num">9</div>
+    </div>
+  </div>
+
+  <!-- CLOSING PANEL – verse full -->
+  <div class="title-panel" style="margin-top:8px;">
+    <p style="color:#c8a46e;font-size:clamp(0.9rem,2vw,1.1rem);line-height:2;font-style:italic;">
+      שְׁמֹאוּל בְּ׳ א׳:כ״ז &nbsp;|&nbsp;
+      <strong style="color:#d4a017;">אֵיךְ נָפְלוּ גִבּוֹרִים וַיֹּאבְדוּ כְּלֵי מִלְחָמָה</strong>
+    </p>
+    <p style="color:#7a6050;font-size:clamp(0.75rem,1.6vw,0.9rem);margin-top:0.8rem;">
+      הקינה המפורסמת ביותר בתנ"ך – דוד מקונן על שאול המלך ועל יהונתן אוהבו
+    </p>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="comic-footer">
+  <p>שמואל ב׳ פרק א׳ • פסוקים י״ז–כ״ז</p>
+  <p>קינת הקשת – להלמד לבני יהודה</p>
+  <a href="../" class="back-btn">← חזרה לכל הסימולציות</a>
+</div>
+
+<script>
+// Device detection
+function detectDevice() {
+  const isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches ||
+                 window.innerWidth <= 768 ||
+                 /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  return isMobile ? 'mobile' : 'desktop';
+}
+const device = detectDevice();
+document.body.classList.add('device-' + device);
+if (typeof gtag !== 'undefined') {
+  gtag('event', 'device_detected', { device_type: device });
+  gtag('event', 'page_view', {
+    page_title: 'קינת דוד – שמואל ב׳ פרק א׳',
+    page_location: window.location.href
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>שמואל א׳ פרק ל״א – קרב הר הגלבוע</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;700;900&family=Noto+Serif+Hebrew:wght@300;400;600&display=swap');
+
+  :root {
+    --gold: #c9a84c;
+    --dark-gold: #8b6914;
+    --crimson: #8b1a1a;
+    --deep-red: #5c0000;
+    --sand: #d4b483;
+    --night: #0a0805;
+    --smoke: rgba(180,140,80,0.08);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--night);
+    color: var(--sand);
+    font-family: 'Noto Serif Hebrew', serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  #canvas-container {
+    position: fixed;
+    inset: 0;
+  }
+
+  canvas { display: block; }
+
+  /* ── Overlay UI ── */
+  #ui {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Top header */
+  #header {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    padding: 18px 28px 14px;
+    background: linear-gradient(to bottom, rgba(10,8,5,0.92), transparent);
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+  }
+
+  #title-block { line-height: 1.1; }
+  #title-heb {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(18px,3vw,32px);
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+    text-shadow: 0 0 30px rgba(201,168,76,0.6);
+  }
+  #title-sub {
+    font-size: clamp(10px,1.4vw,14px);
+    color: var(--sand);
+    opacity: 0.7;
+    letter-spacing: 0.1em;
+  }
+
+  /* Verse panel */
+  #verse-panel {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(680px, 90vw);
+    background: linear-gradient(135deg, rgba(10,8,5,0.88) 0%, rgba(30,18,5,0.88) 100%);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 4px;
+    padding: 20px 28px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(201,168,76,0.15);
+    transition: opacity 0.6s;
+  }
+
+  #verse-number {
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    opacity: 0.8;
+    margin-bottom: 8px;
+  }
+
+  #verse-text {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(14px, 2vw, 20px);
+    font-weight: 400;
+    line-height: 1.7;
+    color: #ede0c4;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  }
+
+  #scene-label {
+    font-size: 11px;
+    color: var(--gold);
+    opacity: 0.6;
+    margin-top: 10px;
+    letter-spacing: 0.12em;
+  }
+
+  /* Bottom controls */
+  #controls {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    pointer-events: all;
+  }
+
+  .btn {
+    background: rgba(201,168,76,0.12);
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold);
+    font-family: 'Noto Serif Hebrew', serif;
+    font-size: 13px;
+    padding: 9px 22px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.1s;
+    letter-spacing: 0.05em;
+  }
+  .btn:hover {
+    background: rgba(201,168,76,0.22);
+    border-color: rgba(201,168,76,0.7);
+    transform: translateY(-1px);
+  }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: 0.3; cursor: default; transform: none; }
+
+  #scene-indicators {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.4);
+    background: transparent;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .dot.active {
+    background: var(--gold);
+    transform: scale(1.4);
+    border-color: var(--gold);
+  }
+
+  /* Auto-play toggle */
+  #auto-btn {
+    font-size: 11px;
+    padding: 7px 14px;
+    opacity: 0.7;
+  }
+  #auto-btn.playing { opacity: 1; border-color: rgba(201,168,76,0.8); }
+
+  /* Blood overlay for dramatic moments */
+  #blood-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(90,0,0,0.55) 100%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1.2s;
+    z-index: 5;
+  }
+
+  /* Loading screen */
+  #loading {
+    position: fixed;
+    inset: 0;
+    background: var(--night);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: opacity 1s;
+  }
+
+  #loading h1 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(26px, 5vw, 52px);
+    color: var(--gold);
+    font-weight: 900;
+    margin-bottom: 10px;
+    text-shadow: 0 0 40px rgba(201,168,76,0.5);
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from { text-shadow: 0 0 20px rgba(201,168,76,0.4); }
+    to   { text-shadow: 0 0 60px rgba(201,168,76,0.9), 0 0 100px rgba(201,168,76,0.3); }
+  }
+
+  #loading p {
+    font-size: 13px;
+    opacity: 0.5;
+    letter-spacing: 0.15em;
+    margin-top: 30px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 0.3; } 50% { opacity: 0.7; }
+  }
+
+  .load-bar {
+    width: 200px;
+    height: 1px;
+    background: rgba(201,168,76,0.15);
+    margin-top: 16px;
+    overflow: hidden;
+  }
+  .load-fill {
+    height: 100%;
+    background: var(--gold);
+    width: 0%;
+    transition: width 0.4s;
+    box-shadow: 0 0 8px var(--gold);
+  }
+
+  /* Camera hint */
+  #hint {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    font-size: 10px;
+    color: var(--sand);
+    opacity: 0.35;
+    line-height: 1.8;
+    text-align: left;
+    direction: ltr;
+  }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <h1>שמואל א׳ · ל״א</h1>
+  <div style="font-size:14px;opacity:0.6;margin-top:4px;">קרב הר הגלבוע</div>
+  <div class="load-bar"><div class="load-fill" id="load-fill"></div></div>
+  <p>טוען סימולציה תלת-מימדית…</p>
+</div>
+
+<div id="canvas-container"></div>
+
+<div id="blood-overlay"></div>
+
+<div id="ui">
+  <div id="header">
+    <div id="title-block">
+      <div id="title-heb">שמואל א׳ – פרק ל״א</div>
+      <div id="title-sub">קרב הר הגלבוע · נפילת שאול המלך</div>
+    </div>
+  </div>
+
+  <div id="hint">
+    🖱 גרור לסיבוב מצלמה<br>
+    🖱 גלגל להתקרבות
+  </div>
+
+  <div id="verse-panel">
+    <div id="verse-number">פסוק א׳</div>
+    <div id="verse-text">וּפְלִשְׁתִּים נִלְחָמִים בְּיִשְׂרָאֵל וַיָּנֻסוּ אַנְשֵׁי יִשְׂרָאֵל מִפְּנֵי פְלִשְׁתִּים וַיִּפְּלוּ חֲלָלִים בְּהַר הַגִּלְבֹּעַ׃</div>
+    <div id="scene-label">▶ הפלישתים תוקפים את ישראל בהר הגלבוע</div>
+  </div>
+
+  <div id="controls">
+    <button class="btn" id="prev-btn" disabled>→ הקודם</button>
+    <div id="scene-indicators"></div>
+    <button class="btn" id="next-btn">הבא ←</button>
+    <button class="btn" id="auto-btn">▶ אוטו</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ══════════════════════════════════════════
+//  CHAPTER DATA
+// ══════════════════════════════════════════
+const SCENES = [
+  {
+    verse: "פסוק א׳",
+    text: "וּפְלִשְׁתִּים נִלְחָמִים בְּיִשְׂרָאֵל וַיָּנֻסוּ אַנְשֵׁי יִשְׂרָאֵל מִפְּנֵי פְלִשְׁתִּים וַיִּפְּלוּ חֲלָלִים בְּהַר הַגִּלְבֹּעַ׃",
+    label: "▶ הפלישתים תוקפים את ישראל בהר הגלבוע",
+    cameraPos: [0, 18, 42],
+    cameraTarget: [0, 0, 0],
+    sceneKey: "battle",
+    blood: 0.3
+  },
+  {
+    verse: "פסוקים ב׳–ג׳",
+    text: "וַיַּדְבְּקוּ פְלִשְׁתִּים אֶת שָׁאוּל וְאֶת בָּנָיו וַיַּכּוּ פְלִשְׁתִּים אֶת יוֹנָתָן וְאֶת אֲבִינָדָב וְאֶת מַלְכִּי שׁוּעַ בְּנֵי שָׁאוּל׃ וַתִּכְבַּד הַמִּלְחָמָה אֶל שָׁאוּל וַיִּמְצָאֻהוּ הַמּוֹרִים אֲנָשִׁים בַּקֶּשֶׁת וַיָּחֶל מְאֹד מֵהַמּוֹרִים׃",
+    label: "▶ יונתן, אבינדב ומלכי-שוע נהרגים",
+    cameraPos: [15, 14, 30],
+    cameraTarget: [5, 0, 0],
+    sceneKey: "sons",
+    blood: 0.5
+  },
+  {
+    verse: "פסוקים ד׳–ה׳",
+    text: "וַיֹּאמֶר שָׁאוּל אֶל נֹשֵׂא כֵלָיו שְׁלֹף חַרְבְּךָ וְדָקְרֵנִי בָהּ פֶּן יָבוֹאוּ הָעֲרֵלִים הָאֵלֶּה וּדְקָרֻנִי וְהִתְעַלְּלוּ בִי וְלֹא אָבָה נֹשֵׂא כֵלָיו כִּי יָרֵא מְאֹד וַיִּקַּח שָׁאוּל אֶת הַחֶרֶב וַיִּפֹּל עָלֶיהָ׃",
+    label: "▶ שאול נופל על חרבו",
+    cameraPos: [8, 10, 18],
+    cameraTarget: [0, 2, 0],
+    sceneKey: "saul_fall",
+    blood: 0.65
+  },
+  {
+    verse: "פסוקים ו׳–ז׳",
+    text: "וַיָּמָת שָׁאוּל וּשְׁלֹשֶׁת בָּנָיו וְנֹשֵׂא כֵלָיו גַּם כָּל אֲנָשָׁיו בַּיּוֹם הַהוּא יַחְדָּיו׃ וַיִּרְאוּ אַנְשֵׁי יִשְׂרָאֵל אֲשֶׁר בְּעֵבֶר הָעֵמֶק... וַיַּעַזְבוּ אֶת הֶעָרִים וַיָּנֻסוּ׃",
+    label: "▶ ישראל נסים, ופלישתים כובשים ערים",
+    cameraPos: [-20, 20, 38],
+    cameraTarget: [-5, 0, 5],
+    sceneKey: "israel_flees",
+    blood: 0.4
+  },
+  {
+    verse: "פסוקים ח׳–י׳",
+    text: "וַיְהִי מִמָּחֳרָת וַיָּבֹאוּ פְלִשְׁתִּים לְפַשֵּׁט אֶת הַחֲלָלִים... וַיִּמְצְאוּ אֶת שָׁאוּל... וַיְשַׁלְּחוּ בְאֶרֶץ פְּלִשְׁתִּים... וַיִּתְלוּ אֶת גְּוִיֹּתוֹ עַל חוֹמַת בֵּית שָׁן׃",
+    label: "▶ הפלישתים מוצאים את גוית שאול ותולים אותה בבית-שאן",
+    cameraPos: [0, 16, 32],
+    cameraTarget: [0, 4, -10],
+    sceneKey: "bethshan",
+    blood: 0.5
+  },
+  {
+    verse: "פסוקים י״א–י״ג",
+    text: "וַיִּשְׁמְעוּ אֵלָיו יֹשְׁבֵי יָבֵישׁ גִּלְעָד... וַיָּקֻמוּ כָּל אִישׁ חַיִל וַיֵּלְכוּ כָל הַלַּיְלָה וַיִּקְחוּ אֶת גּוּף שָׁאוּל... וַיִּקְבְּרוּ אֶת עַצְמֹתֵיהֶם תַּחַת הָאֶשֶׁל בְּיָבֵשָׁה וַיָּצֻמוּ שִׁבְעַת יָמִים׃",
+    label: "▶ אנשי יבש-גלעד לוקחים את גוית שאול וקוברים אותה בכבוד",
+    cameraPos: [0, 22, 46],
+    cameraTarget: [0, 0, 0],
+    sceneKey: "burial",
+    blood: 0.1
+  }
+];
+
+// ══════════════════════════════════════════
+//  THREE.JS SETUP
+// ══════════════════════════════════════════
+const container = document.getElementById('canvas-container');
+const W = window.innerWidth, H = window.innerHeight;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+renderer.setSize(W, H);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.85;
+renderer.setClearColor(0x050302);
+container.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x1a0e05, 0.018);
+
+const camera = new THREE.PerspectiveCamera(55, W/H, 0.1, 300);
+camera.position.set(0, 18, 42);
+camera.lookAt(0, 0, 0);
+
+// ── Lights ──
+const ambient = new THREE.AmbientLight(0x3d2510, 0.8);
+scene.add(ambient);
+
+const sun = new THREE.DirectionalLight(0xff6622, 1.4);
+sun.position.set(-30, 40, -10);
+sun.castShadow = true;
+sun.shadow.mapSize.width = 2048;
+sun.shadow.mapSize.height = 2048;
+sun.shadow.camera.near = 0.5;
+sun.shadow.camera.far = 200;
+sun.shadow.camera.left = -60;
+sun.shadow.camera.right = 60;
+sun.shadow.camera.top = 60;
+sun.shadow.camera.bottom = -60;
+scene.add(sun);
+
+const fill = new THREE.DirectionalLight(0x1a3050, 0.4);
+fill.position.set(30, 20, 20);
+scene.add(fill);
+
+const rimLight = new THREE.PointLight(0xff2200, 1.2, 40);
+rimLight.position.set(0, 5, -10);
+scene.add(rimLight);
+
+// ══════════════════════════════════════════
+//  GEOMETRY HELPERS
+// ══════════════════════════════════════════
+function makeMat(color, roughness=0.85, metalness=0.1) {
+  return new THREE.MeshStandardMaterial({ color, roughness, metalness });
+}
+
+// ── TERRAIN: Mount Gilboa ──
+function buildTerrain() {
+  const geo = new THREE.PlaneGeometry(120, 120, 60, 60);
+  const pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), z = pos.getZ(i);
+    const h = (Math.sin(x*0.12)*2.5 + Math.cos(z*0.1)*2 +
+               Math.sin((x+z)*0.07)*1.5 + Math.random()*0.8) *
+              (1 + Math.max(0, -z*0.04));
+    pos.setY(i, h);
+  }
+  geo.computeVertexNormals();
+  const mat = new THREE.MeshStandardMaterial({
+    color: 0x5c4020,
+    roughness: 0.95,
+    metalness: 0
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.rotation.x = -Math.PI/2;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+
+  // Rocks
+  for (let i = 0; i < 50; i++) {
+    const rg = new THREE.DodecahedronGeometry(Math.random()*1.2+0.3, 0);
+    const rm = new THREE.Mesh(rg, makeMat(0x6b5030, 0.95));
+    rm.position.set(
+      (Math.random()-0.5)*80,
+      0.2,
+      (Math.random()-0.5)*60
+    );
+    rm.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+    rm.castShadow = true;
+    scene.add(rm);
+  }
+}
+
+// ── SKY GRADIENT (background mesh) ──
+function buildSky() {
+  const sg = new THREE.SphereGeometry(180, 32, 16);
+  const sm = new THREE.MeshBasicMaterial({
+    color: 0x1a0a00,
+    side: THREE.BackSide
+  });
+  scene.add(new THREE.Mesh(sg, sm));
+
+  // Sun disc
+  const sdg = new THREE.CircleGeometry(8, 32);
+  const sdm = new THREE.MeshBasicMaterial({ color: 0xff4400 });
+  const sd = new THREE.Mesh(sdg, sdm);
+  sd.position.set(-60, 30, -100);
+  scene.add(sd);
+}
+
+// ── HUMAN FIGURE ──
+function makeHuman(color=0x8b4513, scale=1) {
+  const g = new THREE.Group();
+
+  // Body
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.28,0.22,1.2,8), makeMat(color));
+  body.position.y = 0.9;
+  body.castShadow = true;
+  g.add(body);
+
+  // Head
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.22,8,8), makeMat(color));
+  head.position.y = 1.8;
+  head.castShadow = true;
+  g.add(head);
+
+  // Arms
+  [-1,1].forEach(side => {
+    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.09,0.9,6), makeMat(color));
+    arm.position.set(side*0.42, 1.0, 0);
+    arm.rotation.z = side * 0.3;
+    arm.castShadow = true;
+    g.add(arm);
+  });
+
+  // Legs
+  [-1,1].forEach(side => {
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.1,1.0,6), makeMat(color));
+    leg.position.set(side*0.18, 0.2, 0);
+    leg.castShadow = true;
+    g.add(leg);
+  });
+
+  g.scale.setScalar(scale);
+  return g;
+}
+
+// ── SOLDIER WITH SPEAR ──
+function makeSoldier(bodyColor, armorColor, x, z, rotY=0) {
+  const g = makeHuman(bodyColor);
+  // Armor plate
+  const ar = new THREE.Mesh(new THREE.BoxGeometry(0.62,0.9,0.22), makeMat(armorColor, 0.4, 0.7));
+  ar.position.y = 0.95;
+  g.add(ar);
+  // Spear
+  const sp = new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,3.2,6), makeMat(0x8b6914, 0.7, 0.0));
+  sp.position.set(0.6, 1.4, 0);
+  g.add(sp);
+  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.1,0.4,6), makeMat(0xc0c0c0, 0.3, 0.9));
+  tip.position.set(0.6, 3.1, 0);
+  g.add(tip);
+
+  g.position.set(x, 0.1, z);
+  g.rotation.y = rotY;
+  scene.add(g);
+  return g;
+}
+
+// ── KING SAUL (larger, gold armor) ──
+function makeSaul(x, z, rotY=0, fallen=false) {
+  const g = makeHuman(0x8b4513, 1.15);
+  // Crown
+  const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.26,0.24,0.18,8), makeMat(0xc9a84c, 0.4, 0.9));
+  crown.position.y = 2.08;
+  g.add(crown);
+  // Gold armor
+  const arm = new THREE.Mesh(new THREE.BoxGeometry(0.72,1.0,0.25), makeMat(0xb8860b, 0.3, 0.8));
+  arm.position.y = 0.96;
+  g.add(arm);
+  // Sword
+  const sw = new THREE.Mesh(new THREE.BoxGeometry(0.08,1.8,0.06), makeMat(0xa0a0a0, 0.2, 0.95));
+  sw.position.set(-0.6, 0.8, 0);
+  g.add(sw);
+
+  g.position.set(x, fallen ? -0.6 : 0.1, z);
+  g.rotation.y = rotY;
+  if (fallen) {
+    g.rotation.z = Math.PI/2;
+    g.rotation.x = 0.3;
+  }
+  scene.add(g);
+  return g;
+}
+
+// ── WALL / CITY (Beth-shan) ──
+let cityGroup = null;
+function buildBethshan() {
+  cityGroup = new THREE.Group();
+  // Wall
+  const wallMat = makeMat(0x8b7355, 0.9);
+  const wall = new THREE.Mesh(new THREE.BoxGeometry(28,6,2.5), wallMat);
+  wall.position.set(0,3,-25);
+  wall.castShadow = true; wall.receiveShadow = true;
+  cityGroup.add(wall);
+
+  // Towers
+  [-12,12].forEach(x => {
+    const tower = new THREE.Mesh(new THREE.BoxGeometry(4,9,4), wallMat);
+    tower.position.set(x, 4.5, -25);
+    tower.castShadow = true;
+    cityGroup.add(tower);
+  });
+
+  // Gate
+  const gate = new THREE.Mesh(new THREE.BoxGeometry(3.5,3.5,3), makeMat(0x5c3d11));
+  gate.position.set(0, 1.75, -25);
+  cityGroup.add(gate);
+
+  // Hanging bodies (after Philistines take the city)
+  const hangBody = makeHuman(0x4a2a0a, 0.9);
+  hangBody.position.set(3, 5, -24);
+  hangBody.rotation.z = 0.2;
+  cityGroup.add(hangBody);
+
+  cityGroup.visible = false;
+  scene.add(cityGroup);
+}
+
+// ── CAMPFIRE / BURIAL SCENE ──
+let burialGroup = null;
+function buildBurial() {
+  burialGroup = new THREE.Group();
+  // Mound
+  const mound = new THREE.Mesh(new THREE.SphereGeometry(2.5,12,8), makeMat(0x4a3010));
+  mound.scale.y = 0.4;
+  mound.position.set(0,0.3,0);
+  burialGroup.add(mound);
+
+  // Standing figures
+  for (let i = 0; i < 7; i++) {
+    const a = (i/7)*Math.PI*2;
+    const fig = makeHuman(0x6b3a1a);
+    fig.position.set(Math.cos(a)*4.5, 0, Math.sin(a)*4.5);
+    fig.rotation.y = -a + Math.PI;
+    burialGroup.add(fig);
+  }
+
+  // Fire
+  const firePt = new THREE.PointLight(0xff5500, 2, 12);
+  firePt.position.set(-6, 2, 0);
+  burialGroup.add(firePt);
+  const fireGeo = new THREE.ConeGeometry(0.6,2,8);
+  const fireMat = new THREE.MeshBasicMaterial({ color: 0xff6600 });
+  const fireMesh = new THREE.Mesh(fireGeo, fireMat);
+  fireMesh.position.set(-6,1,0);
+  burialGroup.add(fireMesh);
+
+  burialGroup.visible = false;
+  scene.add(burialGroup);
+}
+
+// ══════════════════════════════════════════
+//  PARTICLES – Arrows / Embers
+// ══════════════════════════════════════════
+let particles;
+function buildParticles() {
+  const count = 250;
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(count * 3);
+  const vel = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    pos[i*3]   = (Math.random()-0.5)*60;
+    pos[i*3+1] = Math.random()*15 + 1;
+    pos[i*3+2] = (Math.random()-0.5)*60;
+    vel[i*3]   = (Math.random()-0.5)*0.08;
+    vel[i*3+1] = -0.04 - Math.random()*0.04;
+    vel[i*3+2] = (Math.random()-0.5)*0.08;
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.userData.vel = vel;
+  const mat = new THREE.PointsMaterial({ color: 0xffaa00, size: 0.25, transparent: true, opacity: 0.7 });
+  particles = new THREE.Points(geo, mat);
+  scene.add(particles);
+}
+
+function animateParticles() {
+  const pos = particles.geometry.attributes.position;
+  const vel = particles.geometry.userData.vel;
+  for (let i = 0; i < pos.count; i++) {
+    let y = pos.getY(i) + vel[i*3+1];
+    let x = pos.getX(i) + vel[i*3];
+    let z = pos.getZ(i) + vel[i*3+2];
+    if (y < 0) { y = 15 + Math.random()*5; x = (Math.random()-0.5)*60; z = (Math.random()-0.5)*60; }
+    pos.setXYZ(i, x, y, z);
+  }
+  pos.needsUpdate = true;
+}
+
+// ══════════════════════════════════════════
+//  SCENE POPULATION
+// ══════════════════════════════════════════
+const soldiers = [];
+const philistines = [];
+let saul, saulFallen;
+
+function populateScene() {
+  buildTerrain();
+  buildSky();
+  buildBethshan();
+  buildBurial();
+  buildParticles();
+
+  // Israeli soldiers (retreating)
+  for (let i = 0; i < 14; i++) {
+    const s = makeSoldier(0x8b6914, 0xd4a017,
+      (Math.random()-0.5)*30 + 10,
+      (Math.random()-0.5)*20,
+      Math.PI * (0.8 + Math.random()*0.4));
+    soldiers.push(s);
+  }
+
+  // Philistine soldiers (advancing)
+  for (let i = 0; i < 18; i++) {
+    const p = makeSoldier(0x2c5282, 0x4a90d9,
+      (Math.random()-0.5)*25 - 12,
+      (Math.random()-0.5)*20,
+      Math.random()*0.6);
+    philistines.push(p);
+  }
+
+  // Saul – standing
+  saul = makeSaul(2, 5, 0.5);
+  // Saul – fallen
+  saulFallen = makeSaul(-1, 3, 0.8, true);
+  saulFallen.visible = false;
+
+  // Sons (3 figures near Saul)
+  for (let i = 0; i < 3; i++) {
+    const son = makeHuman(0x8b4513, 1.0);
+    const ac = new THREE.Mesh(new THREE.BoxGeometry(0.65,0.85,0.22), makeMat(0xb8860b, 0.4, 0.8));
+    ac.position.y = 0.95;
+    son.add(ac);
+    son.position.set(4 + i*2.5, -0.5, 4 + i*0.5);
+    son.rotation.z = Math.PI/2;
+    son.rotation.x = 0.3;
+    scene.add(son);
+  }
+}
+
+// ══════════════════════════════════════════
+//  CAMERA ANIMATION
+// ══════════════════════════════════════════
+let targetCamPos = new THREE.Vector3(0,18,42);
+let targetLookAt = new THREE.Vector3(0,0,0);
+const currentLookAt = new THREE.Vector3(0,0,0);
+let t_lerp = 0;
+let fromPos = new THREE.Vector3(0,18,42);
+let fromLook = new THREE.Vector3(0,0,0);
+
+function setCameraTarget(pos, look) {
+  fromPos.copy(camera.position);
+  fromLook.copy(currentLookAt);
+  targetCamPos.set(...pos);
+  targetLookAt.set(...look);
+  t_lerp = 0;
+}
+
+function updateCamera(dt) {
+  if (t_lerp < 1) {
+    t_lerp = Math.min(1, t_lerp + dt * 0.5);
+    const e = 1 - Math.pow(1-t_lerp, 3);
+    camera.position.lerpVectors(fromPos, targetCamPos, e);
+    currentLookAt.lerpVectors(fromLook, targetLookAt, e);
+    camera.lookAt(currentLookAt);
+  }
+}
+
+// ══════════════════════════════════════════
+//  SCENE TRANSITIONS
+// ══════════════════════════════════════════
+let currentScene = 0;
+
+function applyScene(idx) {
+  const s = SCENES[idx];
+
+  // Verse panel
+  document.getElementById('verse-number').textContent = s.verse;
+  document.getElementById('verse-text').textContent = s.text;
+  document.getElementById('scene-label').textContent = s.label;
+
+  // Blood overlay
+  document.getElementById('blood-overlay').style.opacity = s.blood;
+
+  // Camera
+  setCameraTarget(s.cameraPos, s.cameraTarget);
+
+  // Scene visibility
+  const key = s.sceneKey;
+  cityGroup.visible   = (key === 'bethshan');
+  burialGroup.visible = (key === 'burial');
+  saul.visible        = (key !== 'saul_fall' && key !== 'bethshan' && key !== 'burial');
+  saulFallen.visible  = (key === 'saul_fall' || key === 'bethshan' || key === 'burial');
+
+  // Soldiers visibility
+  soldiers.forEach((s, i) => {
+    s.visible = (key !== 'bethshan' && key !== 'burial');
+    if (key === 'israel_flees') s.position.x = 15 + i*1.2;
+  });
+  philistines.forEach(p => {
+    p.visible = (key !== 'burial');
+  });
+
+  // Lights
+  if (key === 'burial') {
+    rimLight.color.setHex(0xff8800);
+    rimLight.intensity = 1.8;
+    sun.intensity = 0.3;
+    ambient.intensity = 0.4;
+  } else if (key === 'bethshan') {
+    sun.intensity = 0.9;
+    ambient.intensity = 0.7;
+    rimLight.color.setHex(0xff2200);
+    rimLight.intensity = 1.0;
+  } else {
+    sun.intensity = 1.4;
+    ambient.intensity = 0.8;
+    rimLight.color.setHex(0xff2200);
+    rimLight.intensity = 1.2;
+  }
+
+  // Update nav
+  document.getElementById('prev-btn').disabled = idx === 0;
+  document.getElementById('next-btn').disabled = idx === SCENES.length-1;
+  document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===idx));
+}
+
+// ══════════════════════════════════════════
+//  MOUSE ORBIT
+// ══════════════════════════════════════════
+let isDragging = false, lastX = 0, lastY = 0;
+let orbitTheta = 0, orbitPhi = 0.4;
+let orbitRadius = 42;
+let orbitCenter = new THREE.Vector3(0,0,0);
+
+renderer.domElement.addEventListener('mousedown', e => { isDragging=true; lastX=e.clientX; lastY=e.clientY; });
+renderer.domElement.addEventListener('touchstart', e => { isDragging=true; lastX=e.touches[0].clientX; lastY=e.touches[0].clientY; });
+window.addEventListener('mouseup', ()=>isDragging=false);
+window.addEventListener('touchend', ()=>isDragging=false);
+
+function onMove(cx, cy) {
+  if (!isDragging) return;
+  orbitTheta -= (cx-lastX)*0.006;
+  orbitPhi   -= (cy-lastY)*0.004;
+  orbitPhi = Math.max(0.1, Math.min(1.3, orbitPhi));
+  lastX=cx; lastY=cy;
+  const x = orbitCenter.x + orbitRadius*Math.sin(orbitPhi)*Math.sin(orbitTheta);
+  const y = orbitCenter.y + orbitRadius*Math.cos(orbitPhi);
+  const z = orbitCenter.z + orbitRadius*Math.sin(orbitPhi)*Math.cos(orbitTheta);
+  camera.position.set(x,y,z);
+  camera.lookAt(orbitCenter);
+}
+
+window.addEventListener('mousemove', e=>onMove(e.clientX, e.clientY));
+window.addEventListener('touchmove', e=>onMove(e.touches[0].clientX, e.touches[0].clientY));
+
+renderer.domElement.addEventListener('wheel', e => {
+  orbitRadius = Math.max(10, Math.min(80, orbitRadius + e.deltaY*0.05));
+});
+
+// ══════════════════════════════════════════
+//  AUTO-PLAY
+// ══════════════════════════════════════════
+let autoPlay = false, autoTimer = 0;
+const AUTO_INTERVAL = 7;
+
+document.getElementById('auto-btn').addEventListener('click', () => {
+  autoPlay = !autoPlay;
+  autoTimer = 0;
+  document.getElementById('auto-btn').textContent = autoPlay ? '⏸ עצור' : '▶ אוטו';
+  document.getElementById('auto-btn').classList.toggle('playing', autoPlay);
+});
+
+// ══════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════
+function goTo(idx) {
+  currentScene = Math.max(0, Math.min(SCENES.length-1, idx));
+  applyScene(currentScene);
+  autoTimer = 0;
+  // Sync orbit
+  orbitCenter.set(...SCENES[currentScene].cameraTarget);
+  orbitRadius = new THREE.Vector3(...SCENES[currentScene].cameraPos).distanceTo(orbitCenter);
+}
+
+document.getElementById('next-btn').addEventListener('click', () => goTo(currentScene+1));
+document.getElementById('prev-btn').addEventListener('click', () => goTo(currentScene-1));
+
+// Build dots
+const indic = document.getElementById('scene-indicators');
+SCENES.forEach((_,i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i===0?' active':'');
+  d.addEventListener('click', () => { goTo(i); });
+  d.style.pointerEvents='all';
+  indic.appendChild(d);
+});
+
+// ══════════════════════════════════════════
+//  ANIMATION LOOP
+// ══════════════════════════════════════════
+let lastTime = performance.now();
+let elapsed = 0;
+
+function animate() {
+  requestAnimationFrame(animate);
+  const now = performance.now();
+  const dt = Math.min((now-lastTime)/1000, 0.05);
+  lastTime = now;
+  elapsed += dt;
+
+  if (!isDragging) updateCamera(dt);
+
+  animateParticles();
+
+  // Gentle sway on soldiers
+  soldiers.forEach((s, i) => {
+    s.rotation.y += Math.sin(elapsed*0.6 + i)*0.002;
+  });
+  philistines.forEach((p, i) => {
+    p.rotation.y += Math.sin(elapsed*0.5 + i+7)*0.002;
+  });
+
+  // Flicker rim light
+  rimLight.intensity = 1.2 + Math.sin(elapsed*3.7)*0.25;
+
+  // Auto-play
+  if (autoPlay) {
+    autoTimer += dt;
+    if (autoTimer >= AUTO_INTERVAL) {
+      if (currentScene < SCENES.length-1) {
+        goTo(currentScene+1);
+      } else {
+        autoPlay = false;
+        document.getElementById('auto-btn').textContent = '▶ אוטו';
+        document.getElementById('auto-btn').classList.remove('playing');
+      }
+    }
+  }
+
+  renderer.render(scene, camera);
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+function init() {
+  populateScene();
+  applyScene(0);
+
+  // Simulate loading
+  const fill = document.getElementById('load-fill');
+  let p = 0;
+  const iv = setInterval(() => {
+    p += Math.random()*15 + 5;
+    fill.style.width = Math.min(100,p)+'%';
+    if (p >= 100) {
+      clearInterval(iv);
+      setTimeout(() => {
+        const lo = document.getElementById('loading');
+        lo.style.opacity = '0';
+        setTimeout(() => lo.style.display='none', 1000);
+      }, 400);
+    }
+  }, 120);
+
+  animate();
+}
+
+window.addEventListener('resize', () => {
+  const w = window.innerWidth, h = window.innerHeight;
+  camera.aspect = w/h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w,h);
+});
+
+init();
+</script>
+</body>
+</html>
